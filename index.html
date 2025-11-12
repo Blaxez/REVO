@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REVO - Advanced Video Speed Controller</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #ffffff;
+        --accent-blue: #4a90e2;
+        --accent-purple: #9b59b6;
+        --bg-primary: #fafbfc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --shadow: rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* Subtle animated background */
+      .bg-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.03;
+      }
+
+      .bg-pattern::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          var(--accent-blue) 1px,
+          transparent 1px
+        );
+        background-size: 50px 50px;
+        animation: patternMove 60s linear infinite;
+      }
+
+      @keyframes patternMove {
+        from {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        to {
+          transform: translate(50px, 50px) rotate(360deg);
+        }
+      }
+
+      /* Header */
+      header {
+        padding: 100px 20px 140px;
+        text-align: center;
+        position: relative;
+        background: linear-gradient(
+          180deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 100%
+        );
+      }
+
+      .logo-container {
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .logo-wrapper {
+        display: inline-block;
+        position: relative;
+        animation: float 4s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      .logo {
+        width: 180px;
+        height: 180px;
+        filter: drop-shadow(0 20px 60px rgba(74, 144, 226, 0.3));
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .logo-wrapper:hover .logo {
+        transform: scale(1.05) rotate(5deg);
+      }
+
+      .logo-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(
+          circle,
+          rgba(74, 144, 226, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        animation: pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.8;
+        }
+      }
+
+      h1 {
+        font-size: 4.5rem;
+        font-weight: 800;
+        background: linear-gradient(
+          135deg,
+          var(--accent-blue) 0%,
+          var(--accent-purple) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 24px;
+        letter-spacing: -1px;
+        animation: slideDown 0.8s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tagline {
+        font-size: 1.35rem;
+        color: var(--text-secondary);
+        max-width: 750px;
+        margin: 0 auto 50px;
+        line-height: 1.8;
+        font-weight: 400;
+        animation: slideUp 0.8s ease 0.2s both;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .cta-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: slideUp 0.8s ease 0.4s both;
+      }
+
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 48px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-blue) 0%,
+          var(--accent-purple) 100%
+        );
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 40px rgba(74, 144, 226, 0.25);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.6s ease;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 60px rgba(74, 144, 226, 0.4);
+      }
+
+      .cta-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+        box-shadow: 0 4px 20px var(--shadow);
+      }
+
+      .cta-secondary:hover {
+        border-color: var(--accent-blue);
+        box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
+      }
+
+      /* Container */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      section {
+        padding: 100px 0;
+        position: relative;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 70px;
+      }
+
+      .section-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+      }
+
+      .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        max-width: 650px;
+        margin: 0 auto;
+      }
+
+      .accent-line {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-blue),
+          var(--accent-purple)
+        );
+        margin: 20px auto;
+        border-radius: 2px;
+      }
+
+      /* Features Grid */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 35px;
+        margin-bottom: 60px;
+      }
+
+      .feature-card {
+        background: var(--bg-secondary);
+        border: 2px solid var(--border);
+        border-radius: 24px;
+        padding: 45px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(74, 144, 226, 0.03) 0%,
+          rgba(155, 89, 182, 0.03) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--accent-blue);
+        box-shadow: 0 25px 70px rgba(74, 144, 226, 0.15);
+      }
+
+      .feature-card:hover::before {
+        opacity: 1;
+      }
+
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-blue) 0%,
+          var(--accent-purple) 100%
+        );
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 10px 30px rgba(74, 144, 226, 0.25);
+      }
+
+      .feature-icon i {
+        font-size: 38px;
+        color: white;
+      }
+
+      .feature-card h3 {
+        font-size: 1.65rem;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        font-size: 1.05rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Stats Section */
+      .stats-section {
+        background: linear-gradient(
+          135deg,
+          var(--accent-blue) 0%,
+          var(--accent-purple) 100%
+        );
+        padding: 80px 0;
+        margin: 60px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 50px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .stat-item {
+        text-align: center;
+        color: white;
+      }
+
+      .stat-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      /* Installation Steps */
+      .installation-steps {
+        max-width: 950px;
+        margin: 0 auto;
+      }
+
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 35px;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border);
+        border-radius: 20px;
+        padding: 35px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .step::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 0;
+        background: linear-gradient(
+          180deg,
+          var(--accent-blue),
+          var(--accent-purple)
+        );
+        border-radius: 4px 0 0 4px;
+        transition: height 0.4s ease;
+      }
+
+      .step:hover {
+        border-color: var(--accent-blue);
+        transform: translateX(8px);
+        box-shadow: 0 20px 60px rgba(74, 144, 226, 0.12);
+      }
+
+      .step:hover::before {
+        height: 100%;
+      }
+
+      .step-number {
+        background: linear-gradient(
+          135deg,
+          var(--accent-blue) 0%,
+          var(--accent-purple) 100%
+        );
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+        margin-right: 30px;
+        box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+      }
+
+      .step-content h3 {
+        margin-bottom: 12px;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        font-weight: 700;
+      }
+
+      .step-content p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        font-size: 1.05rem;
+      }
+
+      .step-content code {
+        background: linear-gradient(
+          135deg,
+          rgba(74, 144, 226, 0.1),
+          rgba(155, 89, 182, 0.1)
+        );
+        color: var(--accent-blue);
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.95rem;
+      }
+
+      /* Preview Section */
+      .preview-section {
+        background: var(--bg-secondary);
+        padding: 100px 0;
+      }
+
+      .preview-container {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .preview-box {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border: 2px solid var(--border);
+        border-radius: 24px;
+        padding: 50px;
+        margin-top: 30px;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .preview-box::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(74, 144, 226, 0.05) 0%,
+          transparent 70%
+        );
+        animation: rotate 20s linear infinite;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .preview-image {
+        position: relative;
+        z-index: 1;
+        display: inline-block;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 16px;
+        border: 2px dashed var(--accent-blue);
+      }
+
+      .preview-image img {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 12px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--bg-secondary);
+        border-top: 2px solid var(--border);
+      }
+
+      .footer-logo {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+      }
+
+      footer p {
+        margin: 12px 0;
+        color: var(--text-secondary);
+      }
+
+      footer p:first-of-type {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.8rem;
+        }
+
+        .section-title {
+          font-size: 2.2rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .step {
+          flex-direction: column;
+        }
+
+        .step-number {
+          margin-bottom: 20px;
+        }
+
+        header {
+          padding: 80px 20px 100px;
+        }
+
+        .logo {
+          width: 140px;
+          height: 140px;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .cta-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .cta-button {
+          justify-content: center;
+        }
+      }
+
+      /* Scroll animations */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeIn 0.8s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .feature-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .feature-card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .feature-card:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .feature-card:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .feature-card:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .feature-card:nth-child(6) {
+        animation-delay: 0.6s;
+      }
+
+      /* Extension GUI Section */
+      .extension-gui-section {
+        background: var(--bg-secondary);
+        padding: 100px 0;
+      }
+
+      .extension-gui-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centers content vertically */
+        align-items: center; /* Centers content horizontally */
+
+        max-width: 700px;
+        margin: 0 auto;
+        min-height: 100vh; /* Full viewport height */
+
+        text-align: center;
+        padding: 2rem;
+      }
+
+      /* --- FIX STARTS HERE --- */
+
+      /* 1. MODIFIED: Converted the container to a flex column layout.
+          This allows the header, main, and footer to be managed vertically.
+          Added padding-bottom to create a safe area for the button's shadow. */
+      .popup-container {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 470px;
+        font-family: "Inter", "SF Pro", system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        background: linear-gradient(135deg, #6496ff, #78b4ff);
+        color: #ffffff;
+        border-radius: 20px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        overflow: visible; /* Essential for showing the box-shadow */
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+      }
+
+      .popup-container:hover {
+        transform: scale(1);
+      }
+
+      /* Popup inner styling */
+      .popup-container .popup-header {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px 20px 0 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      .popup-container .header-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup-container .logo {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .popup-container .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .popup-container .header-text h1 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 2px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .popup-container .version {
+        font-size: 11px;
+        opacity: 0.8;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      /* 2. MODIFIED: Main content area now flexible.
+         'flex: 1' makes it grow to fill available space, pushing the footer down.
+         The fixed height calculation is removed, making the layout responsive and robust. */
+      .popup-container .popup-main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        min-height: 0; /* Prevents flexbox overflow bugs */
+      }
+
+      .popup-container .section {
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 16px;
+        padding: 16px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .popup-container .section h2 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: inherit;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container .control-group {
+        margin-bottom: 12px;
+      }
+
+      .popup-container .control-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .popup-container .slider-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup-container .slider-container input[type="range"] {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.2);
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container
+        .slider-container
+        input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        border: 2px solid #6496ff;
+        transition: all 0.2s ease;
+      }
+
+      .popup-container
+        .slider-container
+        input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .popup-container .speed-value {
+        min-width: 55px;
+        text-align: right;
+        font-weight: 700;
+        font-size: 16px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .popup-container .toggle-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .popup-container .toggle-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 0;
+      }
+
+      .popup-container .toggle-item label {
+        margin-bottom: 0;
+        font-weight: 500;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container .toggle-switch {
+        position: relative;
+      }
+
+      .popup-container .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .popup-container .toggle-label {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .popup-container .toggle-label::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: white;
+        top: 2px;
+        left: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .popup-container .toggle-switch input:checked + .toggle-label {
+        background: #6496ff;
+      }
+
+      .popup-container .toggle-switch input:checked + .toggle-label::after {
+        transform: translateX(20px);
+      }
+
+      .popup-container .keyboard-config {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .popup-container .shortcut-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 0;
+      }
+
+      .popup-container .shortcut-item label {
+        margin-bottom: 0;
+        font-weight: 500;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container .key-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup-container .key-input input {
+        width: 100px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container .edit-key {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: none;
+        background: rgba(100, 150, 255, 0.3);
+        color: #6496ff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-container .edit-key:hover {
+        background: rgba(100, 150, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .popup-container .domain-info {
+        margin-bottom: 8px;
+      }
+
+      .popup-container .domain-name {
+        font-weight: 600;
+        background: rgba(100, 150, 255, 0.2);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 13px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 3. REMOVED old button styles */
+      .popup-container .btn.secondary {
+        background: rgba(255, 255, 255, 0.3);
+        color: #141428;
+        backdrop-filter: blur(5px);
+      }
+
+      .popup-container .btn.secondary:hover {
+        background: rgba(0, 0, 0, 0.15);
+      }
+
+      /* 4. MODIFIED: Footer area now acts as a transparent container for the button.
+         This change helps create the desired "floating" effect. */
+      .popup-container .popup-footer {
+        padding: 0 16px 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        border-top: none;
+        background: transparent;
+        backdrop-filter: none;
+      }
+
+      .popup-container .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .popup-container .footer-links a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .popup-container .footer-links a:hover {
+        opacity: 0.8;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* Scrollbar for popup */
+      .popup-main::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .popup-main::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+
+      .popup-main::-webkit-scrollbar-thumb {
+        background: rgba(100, 150, 255, 0.5);
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* 5. ADDED: New, requested styles for the "Save Settings" button.
+         Position sticky keeps it anchored at the bottom, and the layout changes
+         ensure its shadow is never clipped. */
+      .save-settings {
+        /* position: sticky; */ /* Not required with flex layout, but can be added for extra assurance */
+        /* bottom: 1.5rem; */ /* Aligns with container padding */
+        align-self: center;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        background: linear-gradient(145deg, #4e9eff, #2b6cff);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(46, 91, 255, 0.4);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .save-settings:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(46, 91, 255, 0.55);
+      }
+
+      /* Special styling for reset settings button, similar to save-settings */
+      .reset-settings {
+        align-self: center;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        background: linear-gradient(145deg, #ff6b6b, #d32f2f);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(211, 47, 47, 0.4);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .reset-settings:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(211, 47, 47, 0.55);
+      }
+      /* --- FIX ENDS HERE --- */
+    </style>
+  </head>
+  <body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+      <header>
+        <div class="logo-container">
+          <div class="logo-glow"></div>
+          <div class="logo-wrapper">
+            <img src="assets/icons/logo.png" alt="REVO Logo" class="logo" />
+          </div>
+        </div>
+        <h1>REVO</h1>
+        <p class="tagline">
+          Master your video playback with precision controls, intelligent
+          memory, and a stunning interface designed for productivity
+        </p>
+        <div class="cta-container">
+          <a href="#install" class="cta-button">Get Started →</a>
+          <a href="#features" class="cta-button cta-secondary"
+            >Explore Features</a
+          >
+        </div>
+      </header>
+
+      <section class="stats-section">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number">0.25x</div>
+              <div class="stat-label">Minimum Speed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">8x</div>
+              <div class="stat-label">Maximum Speed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">0.05x</div>
+              <div class="stat-label">Fine Control</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">HTML5 Compatible</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="section-header">
+          <h2 class="section-title">Powerful Features</h2>
+          <div class="accent-line"></div>
+          <p class="section-subtitle">
+            Everything you need for the perfect video watching experience
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <h3>Universal Compatibility</h3>
+            <p>
+              Works seamlessly with all HTML5 videos across YouTube, Vimeo,
+              Netflix, Coursera, Udemy, and countless other platforms.
+            </p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <h3>Elegant Interface</h3>
+            <p>
+              Clean, distraction-free design with intuitive controls that blend
+              perfectly with any website's aesthetic.
+            </p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+            <h3>Precision Control</h3>
+            <p>
+              Fine-tune playback from 0.25x to 8x speed with 0.05x increments
+              for perfect pacing on lectures, tutorials, and entertainment.
+            </p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-keyboard"></i>
+            </div>
+            <h3>Custom Hotkeys</h3>
+            <p>
+              Configure keyboard shortcuts to match your workflow and control
+              video speed without touching your mouse.
+            </p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            <h3>Per-Site Preferences</h3>
+            <p>
+              Automatically save and restore different speed settings for each
+              website you visit for a truly personalized experience.
+            </p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">
+              <i class="fas fa-memory"></i>
+            </div>
+            <h3>Smart Memory</h3>
+            <p>
+              Never reset your speed again. REVO remembers your last setting and
+              applies it automatically across sessions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="installation" id="install">
+        <div class="section-header">
+          <h2 class="section-title">Installation Guide</h2>
+          <div class="accent-line"></div>
+          <p class="section-subtitle">Get up and running in under 2 minutes</p>
+        </div>
+        <div class="installation-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Download the Extension</h3>
+              <p>
+                Clone or download the REVO repository from GitHub to your local
+                machine. Extract the files to a folder of your choice.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Open Chrome Extensions</h3>
+              <p>
+                Navigate to <code>chrome://extensions</code> in your Chrome or
+                Edge browser. This will open the extensions management page.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Enable Developer Mode</h3>
+              <p>
+                Toggle on the "Developer mode" switch in the top right corner of
+                the extensions page to enable loading unpacked extensions.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Load Unpacked Extension</h3>
+              <p>
+                Click the "Load unpacked" button and select the folder
+                containing the REVO extension files from step 1.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <h3>Start Using REVO</h3>
+              <p>
+                Look for the REVO icon in your browser toolbar. Click it on any
+                video page to access the speed controller and enjoy enhanced
+                video playback!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-section">
+        <div class="preview-container">
+          <div class="section-header">
+            <h2 class="section-title">Clean Interface</h2>
+            <div class="accent-line"></div>
+            <p class="section-subtitle">
+              Intuitive controls that stay out of your way
+            </p>
+          </div>
+          <div class="preview-box">
+            <div class="preview-image">
+              <img
+                src="data:image/svg+xml,%3Csvg width='350' height='140' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='350' height='140' fill='%23ffffff' rx='16'/%3E%3Crect x='20' y='40' width='100' height='60' fill='%23f3f4f6' rx='30' stroke='%23e5e7eb' stroke-width='2'/%3E%3Ccircle cx='60' cy='70' r='18' fill='%234A90E2'/%3E%3Ctext x='70' y='73' font-family='Arial' font-size='14' font-weight='bold' fill='%23ffffff'%3E-%3C/text%3E%3Crect x='125' y='50' width='100' height='40' fill='%234A90E2' rx='20'/%3E%3Ctext x='175' y='75' font-family='Arial' font-size='20' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E1.50x%3C/text%3E%3Crect x='230' y='40' width='100' height='60' fill='%23f3f4f6' rx='30' stroke='%23e5e7eb' stroke-width='2'/%3E%3Ccircle cx='270' cy='70' r='18' fill='%239B59B6'/%3E%3Ctext x='270' y='73' font-family='Arial' font-size='14' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3E+%3C/text%3E%3C/svg%3E"
+                alt="REVO Interface Preview"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Extension GUI Embed -->
+      <section class="extension-gui-section">
+        <div class="preview-container">
+          <div class="section-header">
+            <h2 class="section-title">Extension Interface</h2>
+            <div class="accent-line"></div>
+            <p class="section-subtitle">
+              The actual interface you'll see when using the extension
+            </p>
+          </div>
+          <div class="extension-gui-container">
+            <div class="popup-container">
+              <!-- Header -->
+              <header class="popup-header">
+                <div class="header-content">
+                  <div class="logo">
+                    <img
+                      src="assets/icons/logo.png"
+                      width="24"
+                      height="24"
+                      alt="REVO Logo"
+                    />
+                  </div>
+                  <div class="header-text">
+                    <h1>REVO</h1>
+                    <p class="version">Version 3.0.1</p>
+                  </div>
+                </div>
+              </header>
+
+              <!-- Main Content -->
+              <main class="popup-main">
+                <!-- Quick Controls -->
+                <section class="section">
+                  <h2>Quick Controls</h2>
+                  <div class="control-group">
+                    <label for="global-speed">Global Default Speed</label>
+                    <div class="slider-container">
+                      <input
+                        type="range"
+                        id="global-speed"
+                        min="0.25"
+                        max="8"
+                        step="0.05"
+                        value="1"
+                      />
+                      <span class="speed-value">1.00x</span>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Preferences -->
+                <section class="section">
+                  <h2>Preferences</h2>
+                  <div class="toggle-group">
+                    <div class="toggle-item">
+                      <label for="auto-apply">Auto Apply Last Speed</label>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="auto-apply" />
+                        <label for="auto-apply" class="toggle-label"></label>
+                      </div>
+                    </div>
+
+                    <div class="toggle-item">
+                      <label for="theme-auto">Auto Theme Detection</label>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="theme-auto" checked />
+                        <label for="theme-auto" class="toggle-label"></label>
+                      </div>
+                    </div>
+
+                    <div class="toggle-item">
+                      <label for="overlay-visible"
+                        >Show Overlay by Default</label
+                      >
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="overlay-visible" checked />
+                        <label
+                          for="overlay-visible"
+                          class="toggle-label"
+                        ></label>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Keyboard Shortcuts -->
+                <section class="section">
+                  <h2>Keyboard Shortcuts</h2>
+                  <div class="keyboard-config">
+                    <div class="shortcut-item">
+                      <label>Speed Up</label>
+                      <div class="key-input">
+                        <input
+                          type="text"
+                          data-action="up"
+                          placeholder="Shift + ↑"
+                          readonly
+                        />
+                        <button class="edit-key">Edit</button>
+                      </div>
+                    </div>
+
+                    <div class="shortcut-item">
+                      <label>Speed Down</label>
+                      <div class="key-input">
+                        <input
+                          type="text"
+                          data-action="down"
+                          placeholder="Shift + ↓"
+                          readonly
+                        />
+                        <button class="edit-key">Edit</button>
+                      </div>
+                    </div>
+
+                    <div class="shortcut-item">
+                      <label>Reset Speed</label>
+                      <div class="key-input">
+                        <input
+                          type="text"
+                          data-action="reset"
+                          placeholder="Shift + 0"
+                          readonly
+                        />
+                        <button class="edit-key">Edit</button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Domain Settings -->
+                <section class="section">
+                  <h2>Current Site Settings</h2>
+                  <div class="domain-settings">
+                    <div class="domain-info">
+                      <span class="domain-name" id="current-domain"
+                        >example.com</span
+                      >
+                    </div>
+                    <div class="control-group">
+                      <label for="domain-speed">Site Default Speed</label>
+                      <div class="slider-container">
+                        <input
+                          type="range"
+                          id="domain-speed"
+                          min="0.25"
+                          max="8"
+                          step="0.05"
+                          value="1"
+                        />
+                        <span class="speed-value">1.00x</span>
+                      </div>
+                    </div>
+                    <button class="reset-settings" id="reset-domain">
+                      Reset Site Settings
+                    </button>
+                  </div>
+                </section>
+              </main>
+
+              <!-- Footer -->
+              <footer class="popup-footer">
+                <button class="save-settings" id="save-settings">
+                  Save Settings
+                </button>
+                <div class="footer-links">
+                  <a href="#" id="help-link">Help</a>
+                  <a href="#" id="feedback-link">Feedback</a>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <img src="assets/icons/logo.png" alt="REVO Logo" class="footer-logo" />
+        <p>REVO - Advanced Video Speed Controller © 2025</p>
+        <p>Enhance your video watching experience with precision control</p>
+      </footer>
+    </div>
+
+    <script>
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Intersection Observer for fade-in animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in");
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".feature-card, .step").forEach((el) => {
+        observer.observe(el);
+      });
+
+      // Extension GUI functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        // Speed sliders
+        const globalSpeedSlider = document.getElementById("global-speed");
+        const domainSpeedSlider = document.getElementById("domain-speed");
+        const globalSpeedValue = globalSpeedSlider.nextElementSibling;
+        const domainSpeedValue = domainSpeedSlider.nextElementSibling;
+
+        globalSpeedSlider.addEventListener("input", function () {
+          globalSpeedValue.textContent =
+            parseFloat(this.value).toFixed(2) + "x";
+        });
+
+        domainSpeedSlider.addEventListener("input", function () {
+          domainSpeedValue.textContent =
+            parseFloat(this.value).toFixed(2) + "x";
+        });
+
+        // Toggle switches
+        const toggleSwitches = document.querySelectorAll(
+          ".toggle-switch input"
+        );
+        toggleSwitches.forEach((switchEl) => {
+          switchEl.addEventListener("change", function () {
+            // Visual feedback already handled by CSS
+          });
+        });
+
+        // Edit key buttons
+        const editKeyButtons = document.querySelectorAll(".edit-key");
+        editKeyButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const input = this.previousElementSibling;
+            input.focus();
+            // In a real extension, this would open a key binding dialog
+          });
+        });
+
+        // Save settings button
+        const saveButton = document.getElementById("save-settings");
+        saveButton.addEventListener("click", function () {
+          // Visual feedback for button click
+          this.textContent = "Settings Saved!";
+          setTimeout(() => {
+            this.textContent = "Save Settings";
+          }, 2000);
+        });
+
+        // Reset domain button
+        const resetDomainButton = document.getElementById("reset-domain");
+        resetDomainButton.addEventListener("click", function () {
+          domainSpeedSlider.value = "1";
+          domainSpeedValue.textContent = "1.00x";
+        });
+
+        // Help and feedback links
+        const helpLink = document.getElementById("help-link");
+        const feedbackLink = document.getElementById("feedback-link");
+
+        helpLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          alert("Help documentation would open here in the extension.");
+        });
+
+        feedbackLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          alert("Feedback form would open here in the extension.");
+        });
+      });
+    </script>
+  </body>
+</html>

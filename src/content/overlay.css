@@ -1,0 +1,225 @@
+.smart-speed-overlay {
+    position: absolute;
+    width: 180px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 16px;
+    z-index: 999999;
+    cursor: move;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease-out, transform 0.25s ease-out;
+    font-family: 'Inter', 'SF Pro', system-ui, sans-serif;
+    user-select: none;
+}
+
+/* Light theme by default */
+.smart-speed-overlay {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(20, 20, 40, 0.9);
+}
+
+/* Dark theme */
+.smart-speed-overlay.dark-theme {
+    background: rgba(20, 20, 30, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Header for dragging */
+.overlay-header {
+    height: 16px;
+    margin: -8px -12px 8px -12px;
+    border-radius: 16px 16px 0 0;
+    cursor: move;
+}
+
+/* Content area */
+.overlay-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* Speed control buttons */
+.speed-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(20, 20, 40, 0.9);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.smart-speed-overlay.dark-theme .speed-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.speed-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.smart-speed-overlay.dark-theme .speed-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.speed-btn:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease-in-out;
+}
+
+/* Speed display */
+.speed-display {
+    flex: 1;
+    height: 28px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.smart-speed-overlay.dark-theme .speed-display {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.speed-display:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.smart-speed-overlay.dark-theme .speed-display:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.speed-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: inherit;
+}
+
+/* Toast notification */
+.speed-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: rgba(20, 20, 30, 0.7);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    backdrop-filter: blur(8px) saturate(180%);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    pointer-events: none;
+}
+
+.speed-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Dragging state */
+.smart-speed-overlay.dragging {
+    cursor: grabbing;
+    opacity: 0.9;
+}
+
+/* Hidden state */
+.smart-speed-overlay.hidden {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .smart-speed-overlay {
+        width: 160px;
+        padding: 6px 8px;
+    }
+
+    .speed-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    .speed-display {
+        height: 24px;
+    }
+
+    .speed-value {
+        font-size: 16px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .smart-speed-overlay {
+        border: 2px solid white;
+    }
+
+    .speed-btn {
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .smart-speed-overlay,
+    .speed-btn,
+    .speed-display,
+    .speed-toast {
+        transition: none;
+    }
+
+    .speed-btn:hover {
+        transform: none;
+    }
+
+    .speed-btn:active {
+        transform: none;
+    }
+}
+
+/* Focus styles for accessibility */
+.speed-btn:focus,
+.speed-display:focus {
+    outline: 2px solid rgba(100, 150, 255, 0.8);
+    outline-offset: 2px;
+}
+
+/* Ensure minimum touch targets for accessibility */
+@media (pointer: coarse) {
+
+    .speed-btn,
+    .speed-display {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}

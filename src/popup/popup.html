@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REVO</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <header class="popup-header">
+        <div class="header-content">
+          <div class="logo">
+            <img
+              src="../../assets/icons/logo.png"
+              width="24"
+              height="24"
+              alt="REVO Logo"
+            />
+          </div>
+          <div class="header-text">
+            <h1>REVO</h1>
+            <p class="version">Version 3.0.0</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="popup-main">
+        <section class="section">
+          <h2>Quick Controls</h2>
+          <div class="control-group">
+            <label for="global-speed">Global Default Speed</label>
+            <div class="slider-container">
+              <input
+                type="range"
+                id="global-speed"
+                min="0.25"
+                max="8"
+                step="0.05"
+                value="1"
+              />
+              <span class="speed-value">1.00x</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Preferences</h2>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <label for="auto-apply">Auto Apply Last Speed</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="auto-apply" />
+                <label for="auto-apply" class="toggle-label"></label>
+              </div>
+            </div>
+
+            <div class="toggle-item">
+              <label for="theme-auto">Auto Theme Detection</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="theme-auto" checked />
+                <label for="theme-auto" class="toggle-label"></label>
+              </div>
+            </div>
+
+            <div class="toggle-item">
+              <label for="overlay-visible">Show Overlay by Default</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="overlay-visible" checked />
+                <label for="overlay-visible" class="toggle-label"></label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Keyboard Shortcuts</h2>
+          <div class="keyboard-config">
+            <div class="shortcut-item">
+              <label>Speed Up</label>
+              <div class="key-input">
+                <input
+                  type="text"
+                  data-action="up"
+                  placeholder="Shift + ↑"
+                  readonly
+                />
+                <button class="edit-key">Edit</button>
+              </div>
+            </div>
+
+            <div class="shortcut-item">
+              <label>Speed Down</label>
+              <div class="key-input">
+                <input
+                  type="text"
+                  data-action="down"
+                  placeholder="Shift + ↓"
+                  readonly
+                />
+                <button class="edit-key">Edit</button>
+              </div>
+            </div>
+
+            <div class="shortcut-item">
+              <label>Reset Speed</label>
+              <div class="key-input">
+                <input
+                  type="text"
+                  data-action="reset"
+                  placeholder="Shift + 0"
+                  readonly
+                />
+                <button class="edit-key">Edit</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Current Site Settings</h2>
+          <div class="domain-settings">
+            <div class="domain-info">
+              <span class="domain-name" id="current-domain">example.com</span>
+            </div>
+            <div class="control-group">
+              <label for="domain-speed">Site Default Speed</label>
+              <div class="slider-container">
+                <input
+                  type="range"
+                  id="domain-speed"
+                  min="0.25"
+                  max="8"
+                  step="0.05"
+                  value="1"
+                />
+                <span class="speed-value">1.00x</span>
+              </div>
+            </div>
+            <button class="btn secondary" id="reset-domain">
+              Reset Site Settings
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="popup-footer">
+        <button class="btn primary" id="save-settings">Save Settings</button>
+        <div class="footer-links">
+          <a href="#" id="help-link">Help</a>
+          <a href="#" id="feedback-link">Feedback</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
