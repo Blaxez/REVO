@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "REVO",
+  "version": "3.0.1",
+  "description": "Advanced video speed controller with glassmorphic UI for all HTML5 video websites",
+  "icons": {
+    "16": "assets/icons/logo.png",
+    "32": "assets/icons/logo.png",
+    "48": "assets/icons/logo.png",
+    "128": "assets/icons/logo.png"
+  },
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/overlay.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "REVO"
+  },
+  "commands": {
+    "speed-up": {
+      "description": "Increase video speed by 0.25x"
+    },
+    "speed-down": {
+      "description": "Decrease video speed by 0.25x"
+    },
+    "reset-speed": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+0"
+      },
+      "description": "Reset video speed to 1.0x"
+    },
+    "fine-speed-up": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Up"
+      },
+      "description": "Increase video speed by 0.05x"
+    },
+    "fine-speed-down": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Down"
+      },
+      "description": "Decrease video speed by 0.05x"
+    },
+    "toggle-overlay": {
+      "description": "Toggle overlay visibility"
+    },
+    "focus-video": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+X"
+      },
+      "description": "Focus on the largest video"
+    },
+    "toggle-fullscreen": {
+      "description": "Toggle fullscreen mode"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'"
+  }
+}
