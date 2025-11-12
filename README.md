@@ -47,13 +47,12 @@ REVO is a powerful Chrome extension that allows you to control the playback spee
    - Click the green "Code" button at the top of the repository
    - Select "Download ZIP"
    - Extract the ZIP file to a folder of your choice
-=======
+
 ### From Chrome Web Store (Recommended)
 
 1. Visit the [Chrome Web Store](https://chrome.google.com/webstore)
 2. Search for "REVO Video Speed Controller"
 3. Click "Add to Chrome"
->>>>>>> efd340cc04762a12da49cddfd82b258386196dac
 
 ### Manual Installation
 
